@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jarvis-Bot Guide</title>
+<meta name="description" content="How to use Jarvis-Bot: raid sign-ups, music, and member tracking for the Socks and Sandals guild Discord.">
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --panel2: #f0f2f5; --line: #dde1e6; --text: #1b1f24;
+    --muted: #5f6b7a; --accent: #9a6a12; --accent-bg: #fbf3e2; --link: #0b62c4; --code-bg: #eef0f3;
+    --ok: #1f883d; --warn: #9a6700; --tank: #4a78c2; --heal: #2e8b57; --melee: #b4532a; --ranged: #7b4bb3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1116; --panel: #161b22; --panel2: #1c232d; --line: #2a323d; --text: #e6edf3;
+      --muted: #8b97a6; --accent: #e3a84a; --accent-bg: #2a2214; --link: #6cb6ff; --code-bg: #222a35;
+      --ok: #3fb950; --warn: #d29922;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1116; --panel: #161b22; --panel2: #1c232d; --line: #2a323d; --text: #e6edf3;
+    --muted: #8b97a6; --accent: #e3a84a; --accent-bg: #2a2214; --link: #6cb6ff; --code-bg: #222a35;
+    --ok: #3fb950; --warn: #d29922;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--link); }
+  code, kbd { font: .88em ui-monospace, SFMono-Regular, Consolas, monospace; background: var(--code-bg);
+              padding: .1em .35em; border-radius: 5px; }
+  .layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); max-width: 1200px; margin: 0 auto; }
+  nav.side { position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto;
+             padding: 28px 18px; border-right: 1px solid var(--line); }
+  nav.side .brand { font-weight: 700; font-size: 1.15rem; margin-bottom: 18px; }
+  nav.side .brand span { color: var(--accent); }
+  nav.side h4 { margin: 18px 0 6px; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  nav.side a { display: block; padding: 3px 8px; margin: 0 -8px; border-radius: 6px; color: var(--text);
+               text-decoration: none; font-size: .93rem; }
+  nav.side a:hover { background: var(--panel2); }
+  main { padding: 28px 40px 80px; min-width: 0; }
+  header.hero { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 28px 30px; }
+  header.hero h1 { margin: 0 0 6px; font-size: 2rem; line-height: 1.2; }
+  header.hero h1 span { color: var(--accent); }
+  header.hero p { margin: 6px 0; color: var(--muted); max-width: 70ch; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .chip { display: inline-block; background: var(--accent-bg); color: var(--accent); border-radius: 999px;
+          padding: 4px 12px; font-size: .88rem; font-weight: 600; text-decoration: none; }
+  section { margin-top: 44px; }
+  h2 { font-size: 1.5rem; margin: 0 0 4px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  h2 .who { font-size: .75rem; font-weight: 600; vertical-align: middle; margin-left: 8px; padding: 2px 9px;
+            border-radius: 999px; background: var(--panel2); color: var(--muted); }
+  h3 { font-size: 1.12rem; margin: 28px 0 6px; }
+  p, li { max-width: 78ch; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; margin: 14px 0; }
+  .tip, .note { border-left: 4px solid var(--accent); background: var(--accent-bg); border-radius: 8px;
+                padding: 10px 14px; margin: 14px 0; max-width: 80ch; }
+  .note { border-left-color: var(--muted); background: var(--panel2); }
+  .tip b:first-child, .note b:first-child { display: block; margin-bottom: 2px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .94rem; background: var(--panel);
+          border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--panel2); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+  td code { white-space: nowrap; }
+  .table-wrap { overflow-x: auto; }
+  ol.steps { counter-reset: s; list-style: none; padding: 0; }
+  ol.steps > li { counter-increment: s; position: relative; padding: 8px 0 8px 44px; }
+  ol.steps > li::before { content: counter(s); position: absolute; left: 0; top: 8px; width: 30px; height: 30px;
+                          border-radius: 50%; background: var(--accent); color: var(--panel); font-weight: 700;
+                          display: grid; place-items: center; font-size: .9rem; }
+  .mock { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+          border-radius: 8px; padding: 14px 16px; max-width: 560px; font-size: .92rem; }
+  .mock .t { font-weight: 700; margin-bottom: 4px; }
+  .mock .roles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; margin-top: 10px; }
+  .mock .roles b { display: block; font-size: .85rem; }
+  .btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .btn { font-size: .78rem; padding: 4px 10px; border-radius: 5px; background: var(--panel2); border: 1px solid var(--line); }
+  .btn.p { background: #5865f2; color: #fff; border-color: #5865f2; }
+  .btn.d { background: #da373c; color: #fff; border-color: #da373c; }
+  .btn.g { background: #248046; color: #fff; border-color: #248046; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  footer { margin-top: 60px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 14px; }
+  .theme { position: fixed; right: 16px; bottom: 16px; border: 1px solid var(--line); background: var(--panel);
+           color: var(--text); border-radius: 999px; padding: 6px 12px; cursor: pointer; font: inherit; font-size: .85rem; }
+  @media (max-width: 860px) {
+    .layout { display: block; }
+    nav.side { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 16px; }
+    nav.side .links { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+    nav.side h4 { width: 100%; margin: 10px 0 2px; }
+    nav.side a { margin: 0; padding: 2px 0; }
+    main { padding: 18px 16px 60px; }
+    header.hero { padding: 20px 18px; }
+    header.hero h1 { font-size: 1.6rem; }
+    .mock .roles { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="side" aria-label="Contents">
+  <div class="brand">Jarvis<span>-Bot</span> guide</div>
+  <div class="links">
+    <h4>Raiders</h4>
+    <a href="#signup">Signing up for raids</a>
+    <a href="#times">Raid times</a>
+    <a href="#softres">Soft reserves</a>
+    <a href="#music">Music</a>
+    <h4>Officers</h4>
+    <a href="#setup">Creating a raid (guided)</a>
+    <a href="#create">Creating a raid (quick)</a>
+    <a href="#manage">Managing raids</a>
+    <a href="#repeats">Repeating raids</a>
+    <a href="#loot">Loot rules</a>
+    <a href="#rules">Roster rules</a>
+    <a href="#members">Member tracking</a>
+    <h4>Owner</h4>
+    <a href="#owner">Spotify, reminders and upkeep</a>
+    <a href="#perms">Permissions</a>
+    <h4>Reference</h4>
+    <a href="#commands">All commands</a>
+    <a href="#trouble">Troubleshooting</a>
+  </div>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Meet <span>Jarvis</span></h1>
+  <p>Jarvis-Bot is the Socks and Sandals Discord's helper. It runs raid sign-ups for The Burning Crusade and
+     Wrath of the Lich King, plays music in voice channels, and keeps track of who joins and leaves the server.</p>
+  <p>Everything is done with buttons or <b>slash commands</b>: type <code>/</code> in any channel and pick a Jarvis command.</p>
+  <div class="chips">
+    <a class="chip" href="#signup">Sign up for a raid</a>
+    <a class="chip" href="#music">Play music</a>
+    <a class="chip" href="#setup">Officers: post a raid</a>
+    <a class="chip" href="#commands">Command list</a>
+  </div>
+</header>
+
+<!-- ============================ RAIDERS ============================ -->
+<section id="signup">
+  <h2>Signing up for raids <span class="who">Everyone</span></h2>
+  <p>Each raid is one message in the sign-up channel. It shows when the raid is, the loot rules, and the roster grouped
+     by role, with an icon for every player's spec.</p>
+  <div class="mock" aria-label="Example sign-up">
+    <div class="t">Karazhan</div>
+    <div><b>Server time (Nightslayer):</b> Wed 21 Oct, 7:30 PM<br><b>Your time:</b> Wednesday, October 21, 8:30 PM (in 3 days)<br>
+      <b>Raid:</b> The Burning Crusade · 10-player · <b>6/10</b> signed<br><b>Loot:</b> Soft-Res, 2 items per raider</div>
+    <div class="roles">
+      <div><b style="color:var(--tank)">🛡️ Tanks (2/2)</b>Tankyboi · Bubbles</div>
+      <div><b style="color:var(--heal)">💚 Healers (2/3)</b>Healz · Treehugger</div>
+      <div><b style="color:var(--melee)">⚔️ Melee (1)</b>Stabsworth</div>
+      <div><b style="color:var(--ranged)">🏹 Ranged (1)</b>Pew</div>
+    </div>
+    <div class="btns">
+      <span class="btn">Warrior</span><span class="btn">Paladin</span><span class="btn">Hunter</span><span class="btn">Rogue</span><span class="btn">Priest</span>
+      <span class="btn">Shaman</span><span class="btn">Mage</span><span class="btn">Warlock</span><span class="btn">Druid</span>
+    </div>
+    <div class="btns"><span class="btn p">Tentative</span><span class="btn p">Late</span><span class="btn p">Bench</span><span class="btn p">Absence</span><span class="btn d">Remove</span></div>
+    <div class="btns"><span class="btn">📝 Set soft reserves</span></div>
+  </div>
+
+  <h3>Sign up</h3>
+  <ol class="steps">
+    <li>Click your <b>class</b> button on the raid post.</li>
+    <li>A private message (only you see it) asks for your <b>spec</b>. Click it.</li>
+    <li>You're in. Your spec decides your role: Protection Warrior → Tank, Holy Priest → Healer, Fury Warrior → Melee,
+        Fire Mage → Ranged, and so on. The post updates straight away.</li>
+  </ol>
+  <p>Changed your mind? Click a class again and pick a different spec. Death Knight only appears on Wrath raids.</p>
+
+  <h3>The other buttons</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Button</th><th>What it does</th></tr>
+    <tr><td><b>Tentative</b></td><td>"Maybe." You're listed under Tentative, not in the roster. Works without picking a class, but picking one helps officers plan.</td></tr>
+    <tr><td><b>Late</b></td><td>You're coming but will be late. You still count in the roster and are marked <i>(late)</i>. Pick your class first.</td></tr>
+    <tr><td><b>Bench</b></td><td>You're happy to sit out and fill in if needed.</td></tr>
+    <tr><td><b>Absence</b></td><td>You can't make it. Lets officers know you saw the raid.</td></tr>
+    <tr><td><b>Remove</b></td><td>Takes you off the raid completely.</td></tr>
+  </table></div>
+  <div class="tip"><b>Tip</b>Press Tentative, Late, Bench or Absence a <b>second time</b> to clear it and go back to a normal sign-up.</div>
+
+  <h3>Full roles and the automatic bench</h3>
+  <p>Raids can have a tank and healer limit, and every raid is capped at its size (10 or 25). If you sign up as a role that's
+     full, you go to the <b>Bench</b>, marked <i>(auto)</i>. If a spot opens, the first person in line is moved in
+     automatically and gets a DM from Jarvis.</p>
+
+  <h3>Reminders and closing time</h3>
+  <ul>
+    <li>Shortly before the raid (30 minutes unless the officer changed it), Jarvis <b>DMs everyone signed up</b>, late or tentative.</li>
+    <li>Sign-ups close at the raid start, or earlier if the officer set a deadline. After that the buttons stop working; ask an officer if you need a change.</li>
+    <li>If a raid is cancelled, everyone signed up gets a DM.</li>
+  </ul>
+  <div class="note"><b>Not getting DMs?</b>Allow direct messages from server members: right-click the server icon → <b>Privacy Settings</b> → turn on <b>Direct Messages</b>.</div>
+</section>
+
+<section id="times">
+  <h2>Raid times <span class="who">Everyone</span></h2>
+  <p>Every raid shows two times:</p>
+  <ul>
+    <li><b>Server time (Nightslayer)</b>: the realm clock, the one people say in guild chat ("raid at 7:30 server").</li>
+    <li><b>Your time</b>: the same moment converted to <i>your</i> clock by your Discord app, wherever you live. Someone in
+        Central time sees 8:30 PM, someone on the East Coast sees 9:30 PM.</li>
+  </ul>
+  <p>Nightslayer runs on US Mountain time, one hour behind Central, all year round. Discord doesn't share anyone's time zone
+     with bots, so the "your time" line can't print a zone name like "CST", but the time shown is yours.</p>
+</section>
+
+<section id="softres">
+  <h2>Soft reserves <span class="who">Everyone</span></h2>
+  <p>On a <b>Soft-Res</b> raid, the post says how many items each raider can reserve and has a <b>📝 Set soft reserves</b>
+     button. Click it to open the raid's soft-res sheet in your browser and pick your items. The button stays on the post even
+     after sign-ups close, until the raid starts.</p>
+  <p>If it says "link coming soon", the officer hasn't added this week's sheet yet. Check back later.</p>
+</section>
+
+<section id="music">
+  <h2>Music <span class="who">Everyone</span></h2>
+  <p>Join a voice channel, then use <code>/play</code>. Jarvis joins your channel and starts playing.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Command</th><th>What it does</th></tr>
+    <tr><td><code>/play</code> <i>query</i></td><td>Play or queue a song. The query can be <b>search words</b> ("tavern music"), a <b>YouTube</b> link or playlist,
+        or a <b>Spotify</b> track, album or playlist link.</td></tr>
+    <tr><td><code>/pause</code> · <code>/resume</code></td><td>Pause and carry on.</td></tr>
+    <tr><td><code>/skip</code></td><td>Skip the current song.</td></tr>
+    <tr><td><code>/queue</code></td><td>What's playing and what's next.</td></tr>
+    <tr><td><code>/nowplaying</code></td><td>The current song, how far in, and a link.</td></tr>
+    <tr><td><code>/shuffle</code></td><td>Shuffle the queue.</td></tr>
+    <tr><td><code>/volume</code> <i>1-100</i></td><td>Set the volume (starts at 50).</td></tr>
+    <tr><td><code>/stop</code></td><td>Stop, clear the queue and leave the channel.</td></tr>
+  </table></div>
+  <ul>
+    <li><b>Spotify links</b> work by finding each song on YouTube, so now and then you may get a live or alternate version.
+        Up to 200 songs are added from one playlist or album.</li>
+    <li>Spotify's own playlists (Discover Weekly, Daily Mix, Today's Top Hits) can't be read. Copy the songs into a playlist of your own.</li>
+    <li>Jarvis leaves when everyone else has left the channel, or after 5 minutes with nothing queued.</li>
+    <li>When music starts, Jarvis posts a one-line reminder of these commands (at most once every 30 minutes per channel).</li>
+    <li>Jarvis can only join voice channels its role is allowed into. If it says it can't join, ask an officer (see <a href="#perms">Permissions</a>).</li>
+  </ul>
+</section>
+
+<!-- ============================ OFFICERS ============================ -->
+<section id="setup">
+  <h2>Creating a raid: guided setup <span class="who">Officers</span></h2>
+  <p>Officers are members with the <b>Officers</b> role (or Manage Server). Run <code>/raid setup</code> anywhere in the
+     server and Jarvis walks you through it <b>in a DM</b>, one step at a time. You can cancel at any step.</p>
+  <ol class="steps">
+    <li><b>Expansion</b>: The Burning Crusade or Wrath of the Lich King.</li>
+    <li><b>Raid</b>: pick from the list, or <i>Other</i> to type your own.
+      <div class="card" style="margin-top:8px">
+        <b>TBC</b> (size set automatically): Karazhan and Zul'Aman (10) · Gruul's Lair, Magtheridon's Lair, Gruul + Magtheridon,
+        Serpentshrine Cavern, Tempest Keep: The Eye, Mount Hyjal, Black Temple, Sunwell Plateau (25)<br>
+        <b>Wrath</b>: Naxxramas, Obsidian Sanctum, Eye of Eternity, Vault of Archavon, Onyxia's Lair, Ulduar,
+        Trial of the Crusader, Icecrown Citadel, Ruby Sanctum
+      </div></li>
+    <li><b>Size</b>: 10 or 25 (Wrath and Other only).</li>
+    <li><b>Details</b>: a form for the title (pre-filled with the raid name), date, start time in <b>server time</b>, and notes.
+        Dates: <code>2026-10-21</code>, <code>10/21</code>, a weekday like <code>wed</code>, <code>today</code> or <code>tomorrow</code>.
+        Times: <code>20:00</code>, <code>8pm</code> or <code>7:30pm</code>. Jarvis shows the current server time to help.</li>
+    <li><b>Channel</b>: where to post. Only channels Jarvis can post in are listed.</li>
+    <li><b>Repeat</b>: once, every week, or every 2 weeks.</li>
+    <li><b>Loot</b>: Loot Council, Soft-Res, MS &gt; OS, or not shown. Soft-Res asks how many items each raider can reserve and for the soft-res link (optional, can be added later).</li>
+    <li><b>Ping</b>: a role to mention when the raid is posted (for example @Member - Socks), or no ping.</li>
+    <li><b>Picture</b>: send an image right there in the DM to show on the post and the ping, or press Skip.</li>
+    <li><b>Limits and timings</b>: keep the defaults or change them: tank and healer limits, when sign-ups close, the reminder DM, and (for repeats) how many days ahead each one is posted.</li>
+  </ol>
+  <p>Finally you get a <b>preview</b> of exactly how the post will look, with <b>Post it</b>, <b>Start over</b> and <b>Cancel</b>.
+     Each step waits up to 15 minutes. Running <code>/raid setup</code> again starts a fresh one.</p>
+</section>
+
+<section id="create">
+  <h2>Creating a raid: quick command <span class="who">Officers</span></h2>
+  <p>If you know what you want, <code>/raid create</code> does it in one line. The title box suggests raid names as you type.</p>
+  <div class="card"><code>/raid create title:Karazhan expansion:The Burning Crusade size:10-player date:wed time:7:30pm loot:Soft-Res sr_items:2</code></div>
+  <div class="table-wrap"><table>
+    <tr><th>Option</th><th>Meaning</th><th>Default</th></tr>
+    <tr><td><code>title</code> · <code>expansion</code> · <code>size</code></td><td>Name, TBC or Wrath, 10 or 25 (required)</td><td>-</td></tr>
+    <tr><td><code>date</code> · <code>time</code></td><td>When, in server time (required)</td><td>-</td></tr>
+    <tr><td><code>channel</code></td><td>Where to post</td><td>the channel you're in</td></tr>
+    <tr><td><code>description</code></td><td>Notes on the post</td><td>none</td></tr>
+    <tr><td><code>repeat</code></td><td>No, Weekly, Every 2 weeks</td><td>No</td></tr>
+    <tr><td><code>ping_role</code> · <code>image</code></td><td>Role to mention and a picture for the post</td><td>none</td></tr>
+    <tr><td><code>tanks</code> · <code>healers</code></td><td>Role limits (0 = no limit)</td><td>2 / 3 for 10s, 3 / 6 for 25s</td></tr>
+    <tr><td><code>deadline</code></td><td>Close sign-ups this many minutes before start</td><td>0 (at start)</td></tr>
+    <tr><td><code>reminder</code></td><td>DM sign-ups this many minutes before start (0 = off)</td><td>30</td></tr>
+    <tr><td><code>post_ahead</code></td><td>For repeats: days before each raid it is posted (1-13)</td><td>6</td></tr>
+    <tr><td><code>loot</code> · <code>sr_items</code> · <code>sr_url</code></td><td>Loot rules; for Soft-Res the items per raider (1-10) and the soft-res link</td><td>none · 1 · none</td></tr>
+  </table></div>
+</section>
+
+<section id="manage">
+  <h2>Managing raids <span class="who">Officers</span></h2>
+  <p>Each raid has a number (its <b>event</b>), shown at the bottom of the post. In the commands below, the event box lists
+     upcoming raids so you can just pick one.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Command</th><th>What it does</th></tr>
+    <tr><td><code>/raid edit</code></td><td>Change the title, date, time, notes, limits, deadline, reminder, picture or loot rules.
+        Add <code>also_repeats:True</code> to use the new settings (everything except date and time) for future repeats too.</td></tr>
+    <tr><td><code>/raid add</code></td><td>Sign someone up yourself, with class, spec and status. Works after sign-ups close.</td></tr>
+    <tr><td><code>/raid remove</code></td><td>Take someone off a raid.</td></tr>
+    <tr><td><code>/raid cancel</code></td><td>Mark the raid cancelled (the post stays, greyed out) and DM everyone signed up.</td></tr>
+    <tr><td><code>/raid delete</code></td><td>Delete the post and its sign-ups. No DMs are sent.</td></tr>
+    <tr><td><code>/raid list</code></td><td>Upcoming raids and repeating raids (anyone can use this).</td></tr>
+    <tr><td><code>/raid stop-repeat</code></td><td>Stop a repeating raid. Raids already posted stay.</td></tr>
+  </table></div>
+  <div class="tip"><b>Deleting a repeating raid</b>deletes only that week. Use <code>/raid stop-repeat</code> to stop future ones; the series number is in <code>/raid list</code>.</div>
+</section>
+
+<section id="repeats">
+  <h2>Repeating raids <span class="who">Officers</span></h2>
+  <p>A repeating raid posts itself every week or every 2 weeks, at the same server time. Each one is posted
+     <b>post_ahead days before it starts, at its start time</b> (6 days by default). So a weekly Wednesday 7:30 PM raid appears
+     the Thursday before at 7:30 PM, right around when the last one finishes.</p>
+  <ul>
+    <li>Daylight saving doesn't move it: 7:30 PM server stays 7:30 PM server.</li>
+    <li>If Jarvis were offline past a raid's start, it skips that one rather than posting a raid that already happened.</li>
+    <li>Each week is its own post with its own sign-ups.</li>
+  </ul>
+</section>
+
+<section id="loot">
+  <h2>Loot rules <span class="who">Officers</span></h2>
+  <div class="grid2">
+    <div class="card"><b>Loot Council</b><br>Officers decide who gets what.</div>
+    <div class="card"><b>MS &gt; OS</b><br>Main spec rolls beat off spec rolls.</div>
+    <div class="card"><b>Soft-Res</b><br>Each raider reserves a set number of items on a soft-res sheet (for example softres.it).
+      The post gets a <b>Set soft reserves</b> button.</div>
+  </div>
+  <h3>Soft-Res each week</h3>
+  <p>Soft-res sheets are usually new every week. When a repeating Soft-Res raid is posted, Jarvis <b>DMs the officer who set
+     it up</b> with the exact command to add that week's sheet:</p>
+  <div class="card"><code>/raid edit event:12 sr_url:https://softres.it/raid/abc123</code></div>
+  <p>Use <code>sr_url:-</code> to remove a link. Giving a soft-res link or item count to a raid switches it to Soft-Res automatically.</p>
+</section>
+
+<section id="rules">
+  <h2>Roster rules <span class="who">Officers</span></h2>
+  <ul>
+    <li><b>Signed</b> and <b>Late</b> count toward the roster and the role limits; Tentative, Bench and Absence don't.</li>
+    <li>The raid size (10 or 25) is always the cap. Tank and healer limits are optional (0 = no limit).</li>
+    <li>Over-limit sign-ups go to the bench as <i>(auto)</i> and move in by themselves, oldest first, with a DM.</li>
+    <li>At the deadline the sign-up buttons stop working. Officers can still use <code>/raid add</code> and <code>/raid remove</code>.</li>
+    <li>3 hours after the start the raid is finished and its buttons are removed.</li>
+  </ul>
+</section>
+
+<section id="members">
+  <h2>Member tracking <span class="who">Officers</span></h2>
+  <p>Discord only tells bots someone's account name when they leave, not the nickname they used in the guild. Jarvis keeps
+     its own record of every member's server nickname, roles, join date and earlier names, so its reports say who they
+     actually were.</p>
+  <ul>
+    <li><b>Leaves, kicks and bans</b> are posted in the log channel: server nickname, display name, username, join date,
+        time in the server, roles, earlier names, and for kicks and bans who did it and why.</li>
+    <li><b>Rejoins</b>: when a former member comes back, Jarvis posts what they were called before and the roles they had.</li>
+    <li>People who leave while Jarvis is offline are reported when it starts again.</li>
+  </ul>
+  <div class="table-wrap"><table>
+    <tr><th>Command</th><th>What it does</th></tr>
+    <tr><td><code>/whois</code> <i>name or ID</i></td><td>Find a current or former member by any name they've had (nickname, display name or username).</td></tr>
+    <tr><td><code>/departures</code> <i>[count]</i></td><td>The most recent people to leave, be kicked or be banned.</td></tr>
+  </table></div>
+  <p>Both reply privately and need Manage Server by default. Jarvis only knows names from the day it joined; anyone who left before that can't be looked up.</p>
+</section>
+
+<!-- ============================ OWNER ============================ -->
+<section id="owner">
+  <h2>Spotify, reminders and upkeep <span class="who">Server owner</span></h2>
+  <h3>Spotify login (for playlist links)</h3>
+  <p>Spotify only lists a playlist's songs to a logged-in user, so the server owner logs Jarvis in once:</p>
+  <ol class="steps">
+    <li>Run <code>/spotify-login</code> (only you see the reply) and open the link.</li>
+    <li>Approve. Jarvis only asks to read playlists.</li>
+    <li>Your browser lands on a <code>127.0.0.1</code> page that doesn't load. That's expected. Copy the whole address.</li>
+    <li>Run <code>/spotify-code</code> and paste it, within a few minutes. Jarvis confirms the Spotify account.</li>
+  </ol>
+  <p>This also makes the owner's private playlists playable. The login renews itself.</p>
+  <h3>Reminder DMs to the owner</h3>
+  <ul>
+    <li>From 3 days before the Spotify login is 180 days old, Jarvis DMs the owner every day until <code>/spotify-login</code> is run again.</li>
+    <li>If Spotify ever refuses the login or the app's secret, Jarvis DMs the owner that day.</li>
+  </ul>
+  <h3>Music announcements</h3>
+  <p><code>/announce off</code> stops the "Now playing" messages in chat; <code>/announce on</code> brings them back
+     (Manage Server). Problem notices and the command reminder still post.</p>
+  <h3>Upkeep</h3>
+  <ul>
+    <li>Jarvis restarts itself every day at 5:00 AM Central (4:00 server time), and waits if music is playing. It updates its
+        YouTube tool on each start, so music keeps working when YouTube changes.</li>
+    <li>Member records, raids and settings are kept through restarts and updates, with a daily backup.</li>
+    <li>The bot is monitored; if it stops responding the admins are alerted.</li>
+  </ul>
+</section>
+
+<section id="perms">
+  <h2>Permissions <span class="who">Admins</span></h2>
+  <p>Jarvis can only see and use channels its <b>Jarvis-Bot</b> role is allowed in. For private channels, open
+     <b>Edit Channel → Permissions</b>, add the <b>Jarvis-Bot</b> role and allow:</p>
+  <div class="table-wrap"><table>
+    <tr><th>Channel</th><th>Allow</th></tr>
+    <tr><td>Raid sign-up channels</td><td>View Channel, Send Messages, Embed Links, Attach Files</td></tr>
+    <tr><td>Voice channels for music</td><td>View Channel, Connect, Speak</td></tr>
+    <tr><td>Log channel (member reports)</td><td>View Channel, Send Messages, Embed Links</td></tr>
+  </table></div>
+  <p>Jarvis checks before it posts or joins and tells you exactly which permission is missing.</p>
+</section>
+
+<!-- ============================ REFERENCE ============================ -->
+<section id="commands">
+  <h2>All commands</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Command</th><th>Who</th><th>What it does</th></tr>
+    <tr><td><code>/play</code></td><td>Everyone</td><td>Play a song, YouTube link or playlist, or Spotify link</td></tr>
+    <tr><td><code>/pause</code> <code>/resume</code> <code>/skip</code></td><td>Everyone</td><td>Music controls</td></tr>
+    <tr><td><code>/queue</code> <code>/nowplaying</code> <code>/shuffle</code></td><td>Everyone</td><td>Queue tools</td></tr>
+    <tr><td><code>/volume</code> <code>/stop</code></td><td>Everyone</td><td>Volume; stop and leave</td></tr>
+    <tr><td><code>/raid list</code></td><td>Everyone</td><td>Upcoming and repeating raids</td></tr>
+    <tr><td><code>/raid setup</code></td><td>Officers</td><td>Guided raid creation in a DM</td></tr>
+    <tr><td><code>/raid create</code></td><td>Officers</td><td>Create a raid in one command</td></tr>
+    <tr><td><code>/raid edit</code> <code>/raid cancel</code> <code>/raid delete</code></td><td>Officers</td><td>Change, cancel or delete a raid</td></tr>
+    <tr><td><code>/raid add</code> <code>/raid remove</code></td><td>Officers</td><td>Sign someone up or take them off</td></tr>
+    <tr><td><code>/raid stop-repeat</code></td><td>Officers</td><td>Stop a repeating raid</td></tr>
+    <tr><td><code>/whois</code> <code>/departures</code></td><td>Manage Server</td><td>Look up current and former members</td></tr>
+    <tr><td><code>/announce</code></td><td>Manage Server</td><td>"Now playing" messages on or off</td></tr>
+    <tr><td><code>/spotify-login</code> <code>/spotify-code</code></td><td>Server owner</td><td>Log Jarvis in to Spotify for playlists</td></tr>
+  </table></div>
+  <p>Who can see the Manage Server commands can be changed in <b>Server Settings → Integrations → Jarvis-Bot</b>.</p>
+</section>
+
+<section id="trouble">
+  <h2>Troubleshooting</h2>
+  <div class="table-wrap"><table>
+    <tr><th>What you see</th><th>What to do</th></tr>
+    <tr><td>"I can't join #channel: my role needs …"</td><td>Add the Jarvis-Bot role to that voice channel with View Channel, Connect and Speak.</td></tr>
+    <tr><td>"I can't post in #channel …" when creating a raid</td><td>Add the Jarvis-Bot role to the channel with View, Send, Embed Links and Attach Files.</td></tr>
+    <tr><td>"Sign-ups for this raid are closed"</td><td>The deadline has passed. Ask an officer to add you with <code>/raid add</code>.</td></tr>
+    <tr><td>"Spotify won't share that one"</td><td>It's a Spotify-made playlist or someone else's private one. Copy the songs into your own playlist.</td></tr>
+    <tr><td>"Spotify playlists need a one-time Spotify login"</td><td>The server owner runs <code>/spotify-login</code> (see <a href="#owner">Owner</a>).</td></tr>
+    <tr><td>"I can't DM you" from <code>/raid setup</code>, or no reminders</td><td>Allow DMs from server members: server icon → Privacy Settings → Direct Messages.</td></tr>
+    <tr><td>A song won't play</td><td>Jarvis skips it and plays the next one. Try a different search or link.</td></tr>
+    <tr><td>"Only officers can do that"</td><td>Raid management needs the Officers role or Manage Server.</td></tr>
+  </table></div>
+</section>
+
+<footer>Jarvis-Bot guide · for the Socks and Sandals guild Discord (Nightslayer). WoW class and spec icons © Blizzard Entertainment.</footer>
+</main>
+</div>
+<button class="theme" id="theme" type="button" aria-label="Toggle light or dark theme">◐ Theme</button>
+<script>
+  (function () {
+    var root = document.documentElement, key = 'jarvis-guide-theme';
+    try { var saved = localStorage.getItem(key); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+    document.getElementById('theme').addEventListener('click', function () {
+      var dark = root.getAttribute('data-theme') === 'dark' ||
+        (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      var next = dark ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem(key, next); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>
