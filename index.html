@@ -141,18 +141,26 @@
 <!-- ============================ RAIDERS ============================ -->
 <section id="signup">
   <h2>Signing up for raids <span class="who">Everyone</span></h2>
-  <p>Each raid is one message in the sign-up channel. It shows when the raid is, the loot rules, and the roster grouped
-     by role, with an icon for every player's spec.</p>
+  <p>Each raid is one message in the sign-up channel, laid out like Raid-Helper: the notes and loot rules, who's
+     leading, when it is, how many have signed up, the role totals, then the roster: tanks first, then everyone else by
+     class. Each player shows their <b>spec icon</b>, their <b>sign-up number</b> (the order people signed up) and their name.</p>
   <div class="mock" aria-label="Example sign-up">
-    <div class="t">Karazhan</div>
-    <div><b>Server time (Nightslayer):</b> Wed 21 Oct, 7:30 PM<br><b>Your time:</b> Wednesday, October 21, 8:30 PM (in 3 days)<br>
-      <b>Raid:</b> The Burning Crusade · 10-player · <b>6/10</b> signed<br><b>Loot:</b> Soft-Res, 2 items per raider</div>
-    <div class="roles">
-      <div><b style="color:var(--tank)">🛡️ Tanks (2/2)</b>Tankyboi · Bubbles</div>
-      <div><b style="color:var(--heal)">💚 Healers (2/3)</b>Healz · Treehugger</div>
-      <div><b style="color:var(--melee)">⚔️ Melee (1)</b>Stabsworth</div>
-      <div><b style="color:var(--ranged)">🏹 Ranged (1)</b>Pew</div>
+    <div class="t" style="letter-spacing:.35em">KARAZHAN</div>
+    <div><b>Loot:</b> Soft-Res, 2 items per raider</div>
+    <div class="roles" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+      <div>🚩 Venitra<br>📅 October 21, 2026</div>
+      <div>👥 <b>6</b>/10 (+1)<br>🕗 8:30 PM your time</div>
+      <div>⏳ in 3 days<br>🌐 7:30 PM Nightslayer</div>
+      <div>🛡️ Tanks <b>2</b>/2<br>💚 Healers <b>2</b>/3</div>
+      <div>🏹 Ranged <b>1</b></div>
+      <div>⚔️ Melee <b>1</b></div>
+      <div><b style="color:var(--tank)">🛡️ <u>Tank</u> (2)</b><code>1</code> <b>Tankyboi</b><br><code>4</code> <b>Bubbles</b></div>
+      <div><b style="color:var(--heal)"><u>Priest</u> (1)</b><code>2</code> <b>Healz</b></div>
+      <div><b style="color:var(--heal)"><u>Druid</u> (1)</b><code>3</code> <b>Treehugger</b></div>
+      <div><b style="color:var(--melee)"><u>Rogue</u> (1)</b><code>5</code> <b>Stabsworth</b></div>
+      <div><b style="color:var(--ranged)"><u>Mage</u> (1)</b><code>6</code> <b>Pew</b> ⏰</div>
     </div>
+    <div style="margin-top:8px"><b>Tentative (1)</b><br><code>7</code> Maybe</div>
     <div class="btns">
       <span class="btn">Warrior</span><span class="btn">Paladin</span><span class="btn">Hunter</span><span class="btn">Rogue</span><span class="btn">Priest</span>
       <span class="btn">Shaman</span><span class="btn">Mage</span><span class="btn">Warlock</span><span class="btn">Druid</span>
@@ -165,7 +173,7 @@
   <ol class="steps">
     <li>Click your <b>class</b> button on the raid post.</li>
     <li>A private message (only you see it) asks for your <b>spec</b>. Click it.</li>
-    <li>You're in. Your spec decides your role: Protection Warrior → Tank, Holy Priest → Healer, Fury Warrior → Melee,
+    <li>You're in, with your number in the sign-up order. Your spec decides your role: Protection Warrior → Tank, Holy Priest → Healer, Fury Warrior → Melee,
         Fire Mage → Ranged, and so on. The post updates straight away.</li>
   </ol>
   <p>Changed your mind? Click a class again and pick a different spec. Death Knight only appears on Wrath raids.</p>
@@ -174,7 +182,7 @@
   <div class="table-wrap"><table>
     <tr><th>Button</th><th>What it does</th></tr>
     <tr><td><b>Tentative</b></td><td>"Maybe." You're listed under Tentative, not in the roster. Works without picking a class, but picking one helps officers plan.</td></tr>
-    <tr><td><b>Late</b></td><td>You're coming but will be late. You still count in the roster and are marked <i>(late)</i>. Pick your class first.</td></tr>
+    <tr><td><b>Late</b></td><td>You're coming but will be late. You still count in the roster and are marked ⏰. Pick your class first.</td></tr>
     <tr><td><b>Bench</b></td><td>You're happy to sit out and fill in if needed.</td></tr>
     <tr><td><b>Absence</b></td><td>You can't make it. Lets officers know you saw the raid.</td></tr>
     <tr><td><b>Remove</b></td><td>Takes you off the raid completely.</td></tr>
