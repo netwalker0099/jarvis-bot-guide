@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jarvis-Bot Setup</title>
+<meta name="description" content="Set up and run your own copy of Jarvis-Bot, the Discord raid sign-up, music and member-tracking bot.">
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --panel2: #f0f2f5; --line: #dde1e6; --text: #1b1f24;
+    --muted: #5f6b7a; --accent: #9a6a12; --accent-bg: #fbf3e2; --link: #0b62c4; --code-bg: #eef0f3;
+    --ok: #1f883d; --warn: #9a6700; --tank: #4a78c2; --heal: #2e8b57; --melee: #b4532a; --ranged: #7b4bb3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1116; --panel: #161b22; --panel2: #1c232d; --line: #2a323d; --text: #e6edf3;
+      --muted: #8b97a6; --accent: #e3a84a; --accent-bg: #2a2214; --link: #6cb6ff; --code-bg: #222a35;
+      --ok: #3fb950; --warn: #d29922;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1116; --panel: #161b22; --panel2: #1c232d; --line: #2a323d; --text: #e6edf3;
+    --muted: #8b97a6; --accent: #e3a84a; --accent-bg: #2a2214; --link: #6cb6ff; --code-bg: #222a35;
+    --ok: #3fb950; --warn: #d29922;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--link); }
+  code, kbd { font: .88em ui-monospace, SFMono-Regular, Consolas, monospace; background: var(--code-bg);
+              padding: .1em .35em; border-radius: 5px; }
+  .layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); max-width: 1200px; margin: 0 auto; }
+  nav.side { position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto;
+             padding: 28px 18px; border-right: 1px solid var(--line); }
+  nav.side .brand { font-weight: 700; font-size: 1.15rem; margin-bottom: 18px; }
+  nav.side .brand span { color: var(--accent); }
+  nav.side h4 { margin: 18px 0 6px; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  nav.side a { display: block; padding: 3px 8px; margin: 0 -8px; border-radius: 6px; color: var(--text);
+               text-decoration: none; font-size: .93rem; }
+  nav.side a:hover { background: var(--panel2); }
+  main { padding: 28px 40px 80px; min-width: 0; }
+  header.hero { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 28px 30px; }
+  header.hero h1 { margin: 0 0 6px; font-size: 2rem; line-height: 1.2; }
+  header.hero h1 span { color: var(--accent); }
+  header.hero p { margin: 6px 0; color: var(--muted); max-width: 70ch; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .chip { display: inline-block; background: var(--accent-bg); color: var(--accent); border-radius: 999px;
+          padding: 4px 12px; font-size: .88rem; font-weight: 600; text-decoration: none; }
+  section { margin-top: 44px; }
+  h2 { font-size: 1.5rem; margin: 0 0 4px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  h2 .who { font-size: .75rem; font-weight: 600; vertical-align: middle; margin-left: 8px; padding: 2px 9px;
+            border-radius: 999px; background: var(--panel2); color: var(--muted); }
+  h3 { font-size: 1.12rem; margin: 28px 0 6px; }
+  p, li { max-width: 78ch; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; margin: 14px 0; }
+  .tip, .note { border-left: 4px solid var(--accent); background: var(--accent-bg); border-radius: 8px;
+                padding: 10px 14px; margin: 14px 0; max-width: 80ch; }
+  .note { border-left-color: var(--muted); background: var(--panel2); }
+  .tip b:first-child, .note b:first-child { display: block; margin-bottom: 2px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: .94rem; background: var(--panel);
+          border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--panel2); font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  tr:last-child td { border-bottom: 0; }
+  td code { white-space: nowrap; }
+  .table-wrap { overflow-x: auto; }
+  ol.steps { counter-reset: s; list-style: none; padding: 0; }
+  ol.steps > li { counter-increment: s; position: relative; padding: 8px 0 8px 44px; }
+  ol.steps > li::before { content: counter(s); position: absolute; left: 0; top: 8px; width: 30px; height: 30px;
+                          border-radius: 50%; background: var(--accent); color: var(--panel); font-weight: 700;
+                          display: grid; place-items: center; font-size: .9rem; }
+  .mock { background: var(--panel); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+          border-radius: 8px; padding: 14px 16px; max-width: 560px; font-size: .92rem; }
+  .mock .t { font-weight: 700; margin-bottom: 4px; }
+  .mock .roles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; margin-top: 10px; }
+  .mock .roles b { display: block; font-size: .85rem; }
+  .btns { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .btn { font-size: .78rem; padding: 4px 10px; border-radius: 5px; background: var(--panel2); border: 1px solid var(--line); }
+  .btn.p { background: #5865f2; color: #fff; border-color: #5865f2; }
+  .btn.d { background: #da373c; color: #fff; border-color: #da373c; }
+  .btn.g { background: #248046; color: #fff; border-color: #248046; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  footer { margin-top: 60px; color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 14px; }
+  .theme { position: fixed; right: 16px; bottom: 16px; border: 1px solid var(--line); background: var(--panel);
+           color: var(--text); border-radius: 999px; padding: 6px 12px; cursor: pointer; font: inherit; font-size: .85rem; }
+  @media (max-width: 860px) {
+    .layout { display: block; }
+    nav.side { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 16px; }
+    nav.side .links { display: flex; flex-wrap: wrap; gap: 4px 12px; }
+    nav.side h4 { width: 100%; margin: 10px 0 2px; }
+    nav.side a { margin: 0; padding: 2px 0; }
+    main { padding: 18px 16px 60px; }
+    header.hero { padding: 20px 18px; }
+    header.hero h1 { font-size: 1.6rem; }
+    .mock .roles { grid-template-columns: 1fr; }
+  }
+  pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px;
+        overflow-x: auto; margin: 10px 0; max-width: 100%; }
+  pre code { background: none; padding: 0; font-size: .86rem; white-space: pre; }
+  ol.steps > li pre { margin: 8px 0; }
+  h3 { scroll-margin-top: 16px; }
+  p code, li code { overflow-wrap: anywhere; }   /* long paths wrap on phones */
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="side" aria-label="Contents">
+  <div class="brand">Jarvis<span>-Bot</span> setup</div>
+  <div class="links">
+    <h4>Setup</h4>
+    <a href="#before">Before you start</a>
+    <a href="#docker">1. Install Docker</a>
+    <a href="#wsl">&nbsp;&nbsp;&nbsp;Windows with WSL</a>
+    <a href="#discord">2. Create the bot</a>
+    <a href="#invite">3. Invite and access</a>
+    <a href="#settings">4. Code and settings</a>
+    <a href="#start">5. Start and check</a>
+    <h4>After setup</h4>
+    <a href="#optional">Spotify and monitoring</a>
+    <a href="#running">Keeping it running</a>
+    <a href="#trouble">Troubleshooting</a>
+    <h4>More</h4>
+    <a href="./">Command guide</a>
+  </div>
+</nav>
+
+<main>
+<header class="hero">
+  <h1>Run your own <span>Jarvis</span></h1>
+  <p>This guide takes you from nothing to your own Jarvis-Bot running in your Discord server in about
+     30 minutes. Jarvis runs raid sign-ups for TBC and Wrath Classic, plays music in voice channels, and
+     remembers who members were after they leave.</p>
+  <p>Once it is running, the <a href="./">command guide</a> explains everything it does for raiders and officers.</p>
+  <div class="chips">
+    <a class="chip" href="#before">Start here</a>
+    <a class="chip" href="#wsl">Windows (WSL)</a>
+    <a class="chip" href="#trouble">Troubleshooting</a>
+  </div>
+</header>
+
+<section id="before">
+  <h2>Before you start</h2>
+  <p>You need four things; none of them cost money.</p>
+  <ul>
+    <li><b>A computer that stays on.</b> A small Linux box, a spare PC, a home server, or a cheap cloud VM.
+        1 CPU and 1 GB of memory is plenty; allow 2 GB of disk. It only needs an internet connection out,
+        with no ports opened on your router.</li>
+    <li><b>Docker</b> with Docker Compose (step 1 installs it).</li>
+    <li><b>A Discord server where you have Manage Server</b>, so you can add the bot.</li>
+    <li><b>The code</b>: the Jarvis-Bot zip file from the person who shared it with you (no GitHub account needed).</li>
+  </ul>
+  <div class="tip"><b>Tip</b>Allow about 30 minutes the first time. Keep a text file open while you work:
+    you will collect a token and two ID numbers along the way.</div>
+</section>
+
+<section id="docker">
+  <h2>Step 1: Install Docker</h2>
+  <p>Docker runs the bot in a self-contained box, so you install nothing else by hand.</p>
+  <p><b>Linux (Ubuntu, Debian and most others):</b> run Docker's official install script, then let your
+     user run Docker without <code>sudo</code>. Log out and back in afterwards.</p>
+  <pre><code>curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER</code></pre>
+  <p><b>Windows:</b> the recommended way is WSL, in the <a href="#wsl">next section</a>.
+     <b>macOS, or Windows with Docker Desktop instead:</b> install Docker Desktop from
+     <a href="https://www.docker.com/products/docker-desktop/">docker.com</a> and start it (on Windows, accept
+     the WSL 2 option it offers). Run the commands in this guide in a terminal (Windows Terminal or macOS
+     Terminal). The computer must stay on and Docker Desktop must keep running for the bot to stay online.</p>
+  <p>You also need a way to <b>unzip</b> the code: Windows and macOS have one built in; on Linux run
+     <code>sudo apt install unzip</code> (Ubuntu/Debian).</p>
+  <p><b>Check it works:</b> this should print a version number.</p>
+  <pre><code>docker compose version</code></pre>
+
+  <h3 id="wsl">Windows: setting up with WSL</h3>
+  <p>WSL runs a real Ubuntu Linux inside Windows 10 (version 2004 or later) or Windows 11. Installing Docker
+     inside it, instead of Docker Desktop, is lighter and needs no Docker account. Follow these steps in order;
+     after them, every command in the rest of this guide runs in the <b>Ubuntu</b> terminal.</p>
+  <ol class="steps">
+    <li><b>Install WSL and Ubuntu.</b> Right-click Start &gt; <b>Terminal (Admin)</b> (or PowerShell as
+        administrator) and run:
+      <pre><code>wsl --install -d Ubuntu-24.04</code></pre>
+      Restart Windows when asked. Ubuntu then opens by itself and asks you to create a Linux username and
+      password: pick anything and remember the password (it is what <code>sudo</code> asks for). Later, open
+      Ubuntu from the Start menu.</li>
+    <li><b>Check WSL is version 2 and up to date.</b> In the admin PowerShell:
+      <pre><code>wsl --update
+wsl -l -v</code></pre>
+      <code>Ubuntu-24.04</code> should show <code>VERSION 2</code>. If it shows 1, run
+      <code>wsl --set-version Ubuntu-24.04 2</code>.</li>
+    <li><b>Make sure systemd is on</b>, so Docker starts by itself inside Ubuntu. In the Ubuntu terminal:
+      <pre><code>cat /etc/wsl.conf</code></pre>
+      It should contain <code>systemd=true</code> under <code>[boot]</code> (Ubuntu 24.04 does this by default).
+      If not, run the line below, then in PowerShell run <code>wsl --shutdown</code> and reopen Ubuntu:
+      <pre><code>printf '[boot]\nsystemd=true\n' | sudo tee /etc/wsl.conf</code></pre></li>
+    <li><b>Install Docker and unzip inside Ubuntu:</b>
+      <pre><code>sudo apt update &amp;&amp; sudo apt install -y unzip
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER</code></pre>
+      Close the Ubuntu window and open it again so the group change applies, then check:
+      <code>docker run --rm hello-world</code> should print "Hello from Docker!".</li>
+    <li><b>Keep the files inside Linux.</b> Do steps 4 and 5 of this guide in your Linux home folder
+        (<code>cd ~</code> first, so the code lands in <code>~/jarvis-bot</code>), <b>not</b> under
+        <code>/mnt/c/...</code>. Files on the Windows drive are slow and their permissions break the bot's
+        <code>data</code> folder. To edit <code>.env</code> from Windows, open File Explorer and go to
+        <code>\\wsl$\Ubuntu-24.04\home\&lt;your Linux username&gt;\jarvis-bot</code>; Notepad is fine. Or edit it
+        in Ubuntu with <code>nano ~/jarvis-bot/.env</code>.</li>
+    <li><b>Keep WSL running when no window is open.</b> Windows stops WSL, and the bot with it, shortly after
+        you close the last Ubuntu window. To keep it running from the moment you sign in:
+      <ul>
+        <li>Open <b>Task Scheduler</b> &gt; <b>Create Task</b>. Name: <code>Keep WSL running</code>.</li>
+        <li><b>Triggers</b> &gt; New &gt; <b>At log on</b> (your user).</li>
+        <li><b>Actions</b> &gt; New &gt; Program <code>C:\Windows\System32\wsl.exe</code>, arguments
+            <code>-d Ubuntu-24.04 --exec sleep infinity</code>.</li>
+        <li><b>Settings</b>: untick <b>Stop the task if it runs longer than</b>. Click OK.</li>
+        <li>Right-click the task &gt; <b>Run</b> to start it now.</li>
+      </ul>
+      To keep it running even before anyone signs in, also tick <b>Run whether user is logged on or not</b> on
+      the General tab (Windows asks for your password).</li>
+    <li><b>Stop the PC from sleeping.</b> Settings &gt; System &gt; Power &gt; <b>Screen and sleep</b>: set sleep
+        to <b>Never</b> when plugged in. A sleeping PC takes the bot offline.</li>
+  </ol>
+  <p>Check it after a reboot: sign in, wait a minute without opening Ubuntu, and the bot should show online in
+     Discord. In Ubuntu, <code>docker ps</code> should list <code>jarvis-bot</code> as Up.</p>
+</section>
+
+<section id="discord">
+  <h2>Step 2: Create your Discord bot</h2>
+  <p>Your copy of Jarvis is its own bot, with its own name and picture; you choose both.</p>
+  <ol class="steps">
+    <li>Go to <a href="https://discord.com/developers/applications">discord.com/developers/applications</a>,
+        sign in, and click <b>New Application</b>. The name you give it is the bot's name (you can change it later).</li>
+    <li><b>Installation</b> (left menu): set <b>Install Link</b> to <b>None</b>, then <b>Save Changes</b>. This has
+        to come before step 3, or Discord refuses to save.</li>
+    <li><b>Bot</b> (left menu):
+      <ul>
+        <li>Click <b>Reset Token</b>, then <b>Copy</b>, and paste it into your text file. This token is the
+            bot's password: never share it or post it in chat. Discord shows it only once; if you lose it,
+            reset it again.</li>
+        <li>Turn on <b>Server Members Intent</b>. Jarvis cannot track members without it.</li>
+        <li>Turn off <b>Public Bot</b>, so nobody else can add your bot to their server.</li>
+        <li>Optional: set a username and an icon at the top of the page.</li>
+        <li>Click <b>Save Changes</b>.</li>
+      </ul></li>
+    <li><b>General Information</b> (left menu): copy the <b>Application ID</b> into your text file.</li>
+  </ol>
+</section>
+
+<section id="invite">
+  <h2>Step 3: Invite the bot and give it access</h2>
+  <p>Paste this link into your browser, replacing <code>APP_ID</code> with your Application ID:</p>
+  <pre><code>https://discord.com/oauth2/authorize?client_id=APP_ID&amp;scope=bot+applications.commands&amp;permissions=3329152</code></pre>
+  <p>Pick your server, leave every permission ticked, and click <b>Authorize</b>. The bot joins your member
+     list, offline until you start it in step 5.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Permission</th><th>Why Jarvis needs it</th></tr>
+    <tr><td>View Channels, Send Messages, Embed Links</td><td>Post raid sign-ups and member reports</td></tr>
+    <tr><td>Attach Files</td><td>Pictures on raid posts</td></tr>
+    <tr><td>Mention Everyone</td><td>Ping roles that are not normally mentionable when a raid is posted</td></tr>
+    <tr><td>View Audit Log</td><td>Tell kicks and bans apart from members leaving</td></tr>
+    <tr><td>Connect, Speak</td><td>Play music in voice channels</td></tr>
+  </table></div>
+  <p><b>Private channels.</b> Jarvis can only use channels its role can see. For each private channel it
+     should use, open <b>Edit Channel &gt; Permissions</b>, click <b>+</b>, add the role with the bot's name, and allow:</p>
+  <ul>
+    <li><b>Raid sign-up channels:</b> View Channel, Send Messages, Embed Links, Attach Files</li>
+    <li><b>The member-report channel:</b> View Channel, Send Messages, Embed Links</li>
+    <li><b>Voice channels for music:</b> View Channel, Connect, Speak</li>
+  </ul>
+  <p>You do not need to get this perfect now: when Jarvis cannot post or join somewhere, it says exactly which
+     permission is missing.</p>
+  <p><b>Get two IDs.</b> In Discord, open <b>User Settings &gt; Advanced</b> and turn on <b>Developer Mode</b>.
+     Then right-click your server icon and choose <b>Copy Server ID</b>, and right-click the channel for member
+     reports (a private officer or mod channel works best) and choose <b>Copy Channel ID</b>. Put both in your text file.</p>
+</section>
+
+<section id="settings">
+  <h2>Step 4: Get the code and fill in the settings</h2>
+  <p><b>Unpack the code.</b> Put the zip you were given (for example <code>jarvis-bot-main.zip</code>) in your
+     home folder and unpack it into a folder named <code>jarvis-bot</code>:</p>
+  <ul>
+    <li><b>Linux or WSL:</b> if the zip is in your Windows Downloads folder, copy it into Linux first with
+        <code>cp /mnt/c/Users/&lt;your Windows username&gt;/Downloads/jarvis-bot-main.zip ~/</code> (WSL only).
+        Then run:</li>
+  </ul>
+  <pre><code>cd ~
+unzip jarvis-bot-main.zip
+mv jarvis-bot-main jarvis-bot
+cd jarvis-bot
+ls -a</code></pre>
+  <ul>
+    <li><b>Windows with Docker Desktop, or macOS:</b> right-click the zip &gt; <b>Extract All</b> (Windows) or
+        double-click it (macOS), rename the folder inside to <code>jarvis-bot</code>, then open a terminal in it.</li>
+  </ul>
+  <p>The folder should contain <code>bot.py</code>, <code>compose.yaml</code>, <code>Dockerfile</code> and
+     <code>.env.example</code> (files starting with a dot are hidden in some file browsers).</p>
+  <p><b>Create the settings file and data folders.</b> <code>.env</code> holds your token and settings;
+     <code>data</code> will hold everything Jarvis remembers.</p>
+  <pre><code>cp .env.example .env
+mkdir data cache</code></pre>
+  <p>On Linux also run <code>chmod 600 .env</code> so only you can read it, and <code>id -u</code> and
+     <code>id -g</code>: if either prints something other than 1000, put those numbers in <code>PUID</code> and
+     <code>PGID</code> below.</p>
+  <p><b>Fill in <code>.env</code>.</b> Open it in a text editor (<code>nano .env</code> on Linux, Notepad on
+     Windows). Each line is <code>NAME=value</code>, with no spaces or quotes around the value. Every setting is
+     explained in the file; these are the ones to set now:</p>
+  <div class="table-wrap"><table>
+    <tr><th>Setting</th><th>What to put</th><th>Example</th></tr>
+    <tr><td><code>DISCORD_TOKEN</code></td><td>The bot token from step 2</td><td>(your token)</td></tr>
+    <tr><td><code>GUILD_ID</code></td><td>Your server ID from step 3</td><td><code>123456789012345678</code></td></tr>
+    <tr><td><code>LOG_CHANNEL_ID</code></td><td>The member-report channel ID from step 3</td><td><code>234567890123456789</code></td></tr>
+    <tr><td><code>TZ</code></td><td>Your own time zone, for the daily restart and reminder DMs</td><td><code>America/Chicago</code></td></tr>
+    <tr><td><code>RAID_REALM</code></td><td>Your realm's name, shown on raid posts</td><td><code>Nightslayer</code></td></tr>
+    <tr><td><code>RAID_TZ</code></td><td>Your realm's server time zone: raid times are typed and shown in it</td><td><code>America/Denver</code></td></tr>
+    <tr><td><code>OFFICER_ROLES</code></td><td>Role names allowed to create raids, comma-separated (Manage Server always can)</td><td><code>Officers,Raid Lead</code></td></tr>
+    <tr><td><code>PUID</code>, <code>PGID</code></td><td>Only if <code>id -u</code> / <code>id -g</code> were not 1000</td><td><code>1000</code></td></tr>
+  </table></div>
+  <p>Time zones use their official names. Most US realms use <code>America/New_York</code>,
+     <code>America/Chicago</code>, <code>America/Denver</code> or <code>America/Los_Angeles</code>. To check your
+     realm, compare the in-game server clock with your own clock. Leave the Spotify and monitoring lines empty for now.</p>
+</section>
+
+<section id="start">
+  <h2>Step 5: Start it and check it works</h2>
+  <p>From the <code>jarvis-bot</code> folder, build and start the bot (the first build downloads about 1 GB and
+     takes a few minutes), then watch its log:</p>
+  <pre><code>docker compose up -d --build
+docker compose logs -f</code></pre>
+  <p>Within a minute you should see these lines (press Ctrl+C to stop watching; the bot keeps running):</p>
+  <ul>
+    <li><code>ready as &lt;your bot name&gt;: N members recorded</code>: connected, and it has recorded your members.</li>
+    <li><code>log channel #&lt;channel&gt;: permissions OK</code>: it can post member reports.</li>
+    <li><code>raid icons: 43 ready, 43 newly uploaded</code>: it uploaded its class and spec icons (first start only).</li>
+  </ul>
+  <p>If you see <code>RAID_TZ is not set</code> instead, fill in <code>RAID_TZ</code> in <code>.env</code> and
+     run <code>docker compose up -d</code> again.</p>
+  <p><b>Try it in Discord.</b> The bot now shows as online. Type <code>/</code> in any channel and its commands
+     appear: <code>/raid</code>, <code>/play</code>, <code>/whois</code> and more (restart Discord if they do not
+     show after a minute). Then:</p>
+  <ol class="steps">
+    <li>Officers: run <code>/raid setup</code> and follow the DM; it posts a test raid you can delete with <code>/raid delete</code>.</li>
+    <li>Join a voice channel and run <code>/play</code> with a song name.</li>
+    <li>Run <code>/whois</code> with a member's name.</li>
+  </ol>
+  <p>What every command does, for raiders and officers: the <a href="./">command guide</a> (written for the
+     guild Jarvis was built for, but the commands are the same).</p>
+</section>
+
+<section id="optional">
+  <h2>Optional: Spotify links and monitoring</h2>
+  <p>Music from YouTube works without either of these.</p>
+  <p><b>Spotify links.</b> Spotify gives Jarvis the track list and the songs play from YouTube.</p>
+  <ol class="steps">
+    <li>Go to <a href="https://developer.spotify.com/dashboard">developer.spotify.com/dashboard</a>, sign in with
+        any Spotify account, and click <b>Create app</b>. Any name and description; set the redirect URI to
+        <code>http://127.0.0.1:8888/callback</code> and click <b>Add</b>; tick <b>Web API</b>; save.</li>
+    <li>In the app's <b>Settings</b>, copy the <b>Client ID</b>, then click <b>View client secret</b> and copy that too.</li>
+    <li>Put them in <code>.env</code> as <code>SPOTIFY_CLIENT_ID</code> and <code>SPOTIFY_CLIENT_SECRET</code>,
+        then run <code>docker compose up -d</code>.</li>
+  </ol>
+  <p>Tracks and albums now work. <b>Playlists need one more step</b>, because Spotify only lists a playlist's
+     songs to a logged-in user: the server owner runs <code>/spotify-login</code> in Discord, opens the link and
+     approves (Jarvis only asks to read playlists). The browser then lands on a <code>127.0.0.1</code> page that
+     does not load; that is expected. Copy that whole address from the address bar and paste it into
+     <code>/spotify-code</code> within a few minutes. Jarvis renews the login itself, and DMs the owner three days
+     before it needs redoing (about every 180 days).</p>
+  <p><b>Monitoring.</b> If you run Uptime Kuma, create a <b>Push</b> monitor and put its push URL, without the
+     <code>?status=...</code> part, in <code>.env</code> as <code>KUMA_PUSH_URL</code>. Jarvis checks in every 60
+     seconds while it is connected, so the monitor alerts you if the bot stops.</p>
+</section>
+
+<section id="running">
+  <h2>Keeping it running</h2>
+  <p>Jarvis looks after most things itself: it restarts once a day at <code>RESTART_AT</code> (5:00 AM in your
+     <code>TZ</code> by default, but never while music is playing), updates its YouTube component on every start,
+     and writes a daily backup of its database to <code>data/backups/</code> (14 days kept). It comes back on its
+     own after the computer reboots, as long as Docker starts at boot (the default on Linux; on WSL the "Keep WSL
+     running" task from step 1 handles it; with Docker Desktop, set it to start when you sign in).</p>
+  <p><b>Install a new version</b> when you are sent a newer zip. Your <code>.env</code> and <code>data</code>
+     folder are not in the zip, so unpacking it over your existing folder keeps them. Copy the new zip into your
+     home folder, then:</p>
+  <pre><code>cd ~
+unzip -o jarvis-bot-main.zip
+cp -r jarvis-bot-main/. jarvis-bot/
+rm -r jarvis-bot-main
+cd jarvis-bot
+docker compose up -d --build</code></pre>
+  <p>Your members, raids and settings are in <code>data/</code> and are kept through updates.</p>
+  <p><b>Changed a setting?</b> After editing <code>.env</code>, run <code>docker compose up -d</code>. A plain
+     restart keeps the old values.</p>
+  <p><b>Back it up.</b> Everything Jarvis remembers is in the <code>data</code> folder, and your settings are in
+     <code>.env</code>. Copy both somewhere safe now and then (the token in <code>.env</code> is a secret, so keep
+     the copy private).</p>
+  <p><b>Move to a new computer:</b> stop the bot on the old computer (<code>docker compose down</code> in the
+     <code>jarvis-bot</code> folder), copy the whole <code>jarvis-bot</code> folder (it includes <code>.env</code>
+     and <code>data</code>) to the new one, install Docker there (step 1), and run
+     <code>docker compose up -d --build</code> in it. Never run two copies with the same token at once.</p>
+</section>
+
+<section id="trouble">
+  <h2>Troubleshooting</h2>
+  <p>The log usually says what is wrong: <code>docker compose logs --tail 50</code> from the <code>jarvis-bot</code> folder.</p>
+  <div class="table-wrap"><table>
+    <tr><th>What you see</th><th>What to do</th></tr>
+    <tr><td><code>PrivilegedIntentsRequired</code> in the log</td><td>Turn on <b>Server Members Intent</b> (step 2), then <code>docker compose up -d</code></td></tr>
+    <tr><td><code>Improper token</code> or <code>401 Unauthorized</code></td><td>The token in <code>.env</code> is wrong or was reset: reset it in the Developer Portal and paste the new one</td></tr>
+    <tr><td>"Private application cannot have a default authorization link"</td><td>Set <b>Install Link</b> to <b>None</b> on the Installation tab first (step 2)</td></tr>
+    <tr><td>The bot is offline</td><td><code>docker compose ps</code> should show it Up; if not, <code>docker compose up -d</code> and read the log</td></tr>
+    <tr><td>Slash commands do not appear</td><td>Check <code>GUILD_ID</code> is your server's ID; wait a minute; restart Discord</td></tr>
+    <tr><td>"I can't post in #channel" or "I can't join"</td><td>Add the bot's role to that channel with the permissions in step 3</td></tr>
+    <tr><td><code>Permission denied</code> on <code>/data</code></td><td>On Linux, <code>sudo chown -R $(id -u):$(id -g) data cache</code> and set <code>PUID</code>/<code>PGID</code> in <code>.env</code></td></tr>
+    <tr><td>Raid times an hour or more off</td><td>Set <code>RAID_TZ</code> to your realm's server time zone (when unset it uses UTC)</td></tr>
+    <tr><td><code>/play</code> will not play a song</td><td>Try another search or link; if nothing plays, <code>docker compose restart</code> updates the YouTube component</td></tr>
+    <tr><td>"Spotify won't share that one"</td><td>It is a Spotify-made playlist or someone else's private one: copy the songs into your own playlist</td></tr>
+    <tr><td>"Spotify playlists need a one-time Spotify login"</td><td>The server owner runs <code>/spotify-login</code> (<a href="#optional">Optional section</a>)</td></tr>
+    <tr><td>No reminder DMs</td><td>Allow DMs from server members: server icon &gt; Privacy Settings &gt; Direct Messages</td></tr>
+  </table></div>
+  <p>Still stuck? Send the person who shared the bot the last 50 log lines (<code>docker compose logs --tail 50</code>).
+     The log never prints your token, but check anything else you paste.</p>
+</section>
+
+<footer>Jarvis-Bot setup guide · <a href="./">Command guide</a>. WoW class and spec icons © Blizzard Entertainment.</footer>
+</main>
+</div>
+
+<button class="theme" id="theme" type="button" aria-label="Toggle light or dark theme">◐ Theme</button>
+<script>
+  (function () {
+    var root = document.documentElement, key = 'jarvis-guide-theme';
+    try { var saved = localStorage.getItem(key); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+    document.getElementById('theme').addEventListener('click', function () {
+      var dark = root.getAttribute('data-theme') === 'dark' ||
+        (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      var next = dark ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem(key, next); } catch (e) {}
+    });
+  })();
+</script>
+</body>
+</html>
