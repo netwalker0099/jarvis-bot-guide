@@ -129,7 +129,7 @@
 <header class="hero">
   <h1>Run your own <span>Jarvis</span></h1>
   <p>This guide takes you from nothing to your own Jarvis-Bot running in your Discord server in about
-     30 minutes. Jarvis runs raid sign-ups for TBC and Wrath Classic, plays music in voice channels, and
+     30 minutes. Jarvis runs raid sign-ups for WoW Forever, Classic Era, TBC and Wrath, plays music in voice channels, and
      remembers who members were after they leave.</p>
   <p>Once it is running, the <a href="./">command guide</a> explains everything it does for raiders and officers.</p>
   <div class="chips">
@@ -306,17 +306,22 @@ mkdir data cache</code></pre>
   <div class="table-wrap"><table>
     <tr><th>Setting</th><th>What to put</th><th>Example</th></tr>
     <tr><td><code>DISCORD_TOKEN</code></td><td>The bot token from step 2</td><td>(your token)</td></tr>
-    <tr><td><code>GUILD_ID</code></td><td>Your server ID from step 3</td><td><code>123456789012345678</code></td></tr>
+    <tr><td><code>GUILD_ID</code></td><td>Your server ID from step 3 (your home server: ready at once, no approval or setup wizard needed)</td><td><code>123456789012345678</code></td></tr>
     <tr><td><code>LOG_CHANNEL_ID</code></td><td>The member-report channel ID from step 3</td><td><code>234567890123456789</code></td></tr>
     <tr><td><code>TZ</code></td><td>Your own time zone, for the daily restart and reminder DMs</td><td><code>America/Chicago</code></td></tr>
     <tr><td><code>RAID_REALM</code></td><td>Your realm's name, shown on raid posts</td><td><code>Nightslayer</code></td></tr>
     <tr><td><code>RAID_TZ</code></td><td>Your realm's server time zone: raid times are typed and shown in it</td><td><code>America/Denver</code></td></tr>
+    <tr><td><code>RAID_ERA</code></td><td><code>forever</code> (WoW Forever), <code>classic</code> (Classic Era / Anniversary), <code>tbc</code> or <code>wotlk</code></td><td><code>tbc</code></td></tr>
     <tr><td><code>OFFICER_ROLES</code></td><td>Role names allowed to create raids, comma-separated (Manage Server always can)</td><td><code>Officers,Raid Lead</code></td></tr>
     <tr><td><code>PUID</code>, <code>PGID</code></td><td>Only if <code>id -u</code> / <code>id -g</code> were not 1000</td><td><code>1000</code></td></tr>
   </table></div>
   <p>Time zones use their official names. Most US realms use <code>America/New_York</code>,
      <code>America/Chicago</code>, <code>America/Denver</code> or <code>America/Los_Angeles</code>. To check your
      realm, compare the in-game server clock with your own clock. Leave the Spotify and monitoring lines empty for now.</p>
+  <p>The home-server settings (<code>LOG_CHANNEL_ID</code>, <code>RAID_*</code>, <code>OFFICER_ROLES</code>) are only
+     read on the first start. After that, change them in Discord with <code>/jarvis setup</code>. You can also leave
+     <code>GUILD_ID</code> and those settings empty: Jarvis then DMs you to approve your server and walks you through
+     the same setup in a DM.</p>
 </section>
 
 <section id="start">
@@ -327,12 +332,18 @@ mkdir data cache</code></pre>
 docker compose logs -f</code></pre>
   <p>Within a minute you should see these lines (press Ctrl+C to stop watching; the bot keeps running):</p>
   <ul>
-    <li><code>ready as &lt;your bot name&gt;: N members recorded</code>: connected, and it has recorded your members.</li>
-    <li><code>log channel #&lt;channel&gt;: permissions OK</code>: it can post member reports.</li>
+    <li><code>bot owner: &lt;you&gt;; servers: &lt;your server&gt; (approved)</code>: connected, and your server is set up.</li>
+    <li><code>&lt;your server&gt;: N members recorded</code>: it has recorded your members.</li>
+    <li><code>&lt;your server&gt;: report channel #&lt;channel&gt;: permissions OK</code>: it can post member reports.</li>
     <li><code>raid icons: 43 ready, 43 newly uploaded</code>: it uploaded its class and spec icons (first start only).</li>
   </ul>
-  <p>If you see <code>RAID_TZ is not set</code> instead, fill in <code>RAID_TZ</code> in <code>.env</code> and
-     run <code>docker compose up -d</code> again.</p>
+  <p>Without <code>GUILD_ID</code> you get a DM with <b>Approve</b> instead; approve, then answer the setup
+     questions in the DM. Run <code>/jarvis status</code> in Discord to see what is set.</p>
+  <p><b>More servers.</b> One Jarvis can serve several Discord servers: invite it with the same link (step 3). Each
+     time, you get a DM to approve the server (no answer in 24 hours and it leaves), then whoever added it chooses that
+     server's features (music, raid sign-ups, member tracking), era, realm, time zone and officers. With
+     <b>Public Bot</b> off only you can add it, so you need Manage Server on the other server, or turn Public Bot on
+     for a moment.</p>
   <p><b>Try it in Discord.</b> The bot now shows as online. Type <code>/</code> in any channel and its commands
      appear: <code>/raid</code>, <code>/play</code>, <code>/whois</code> and more (restart Discord if they do not
      show after a minute). Then:</p>
@@ -358,10 +369,10 @@ docker compose logs -f</code></pre>
         then run <code>docker compose up -d</code>.</li>
   </ol>
   <p>Tracks and albums now work. <b>Playlists need one more step</b>, because Spotify only lists a playlist's
-     songs to a logged-in user: the server owner runs <code>/spotify-login</code> in Discord, opens the link and
+     songs to a logged-in user: the bot owner (you) runs <code>/spotify-login</code> in Discord, opens the link and
      approves (Jarvis only asks to read playlists). The browser then lands on a <code>127.0.0.1</code> page that
      does not load; that is expected. Copy that whole address from the address bar and paste it into
-     <code>/spotify-code</code> within a few minutes. Jarvis renews the login itself, and DMs the owner three days
+     <code>/spotify-code</code> within a few minutes. Jarvis renews the login itself, and DMs you three days
      before it needs redoing (about every 180 days).</p>
   <p><b>Monitoring.</b> If you run Uptime Kuma, create a <b>Push</b> monitor and put its push URL, without the
      <code>?status=...</code> part, in <code>.env</code> as <code>KUMA_PUSH_URL</code>. Jarvis checks in every 60
@@ -405,13 +416,13 @@ docker compose up -d --build</code></pre>
     <tr><td><code>Improper token</code> or <code>401 Unauthorized</code></td><td>The token in <code>.env</code> is wrong or was reset: reset it in the Developer Portal and paste the new one</td></tr>
     <tr><td>"Private application cannot have a default authorization link"</td><td>Set <b>Install Link</b> to <b>None</b> on the Installation tab first (step 2)</td></tr>
     <tr><td>The bot is offline</td><td><code>docker compose ps</code> should show it Up; if not, <code>docker compose up -d</code> and read the log</td></tr>
-    <tr><td>Slash commands do not appear</td><td>Check <code>GUILD_ID</code> is your server's ID; wait a minute; restart Discord</td></tr>
+    <tr><td>Slash commands do not appear</td><td>Approve the server (DM from Jarvis) and check the feature is on in <code>/jarvis setup</code>; wait a minute; restart Discord</td></tr>
     <tr><td>"I can't post in #channel" or "I can't join"</td><td>Add the bot's role to that channel with the permissions in step 3</td></tr>
     <tr><td><code>Permission denied</code> on <code>/data</code></td><td>On Linux, <code>sudo chown -R $(id -u):$(id -g) data cache</code> and set <code>PUID</code>/<code>PGID</code> in <code>.env</code></td></tr>
-    <tr><td>Raid times an hour or more off</td><td>Set <code>RAID_TZ</code> to your realm's server time zone (when unset it uses UTC)</td></tr>
+    <tr><td>Raid times an hour or more off</td><td>Run <code>/jarvis setup</code> and pick the time zone whose clock matches the in-game server clock</td></tr>
     <tr><td><code>/play</code> will not play a song</td><td>Try another search or link; if nothing plays, <code>docker compose restart</code> updates the YouTube component</td></tr>
     <tr><td>"Spotify won't share that one"</td><td>It is a Spotify-made playlist or someone else's private one: copy the songs into your own playlist</td></tr>
-    <tr><td>"Spotify playlists need a one-time Spotify login"</td><td>The server owner runs <code>/spotify-login</code> (<a href="#optional">Optional section</a>)</td></tr>
+    <tr><td>"Spotify playlists need a one-time Spotify login"</td><td>The bot owner runs <code>/spotify-login</code> (<a href="#optional">Optional section</a>)</td></tr>
     <tr><td>No reminder DMs</td><td>Allow DMs from server members: server icon &gt; Privacy Settings &gt; Direct Messages</td></tr>
   </table></div>
   <p>Still stuck? Send the person who shared the bot the last 50 log lines (<code>docker compose logs --tail 50</code>).
