@@ -169,17 +169,19 @@
       <span class="btn">Shaman</span><span class="btn">Mage</span><span class="btn">Warlock</span><span class="btn">Druid</span>
     </div>
     <div class="btns"><span class="btn p">Tentative</span><span class="btn p">Late</span><span class="btn p">Bench</span><span class="btn p">Absence</span><span class="btn d">Remove</span></div>
-    <div class="btns"><span class="btn">📝 Set soft reserves</span></div>
+    <div class="btns"><span class="btn">📝 Set soft reserves</span><span class="btn">⚙️ Officers</span></div>
   </div>
 
   <h3>Sign up</h3>
   <ol class="steps">
     <li>Click your <b>class</b> button on the raid post.</li>
-    <li>A private message (only you see it) asks for your <b>spec</b>. Click it.</li>
+    <li>The first time you sign up as that class, a private message (only you see it) asks for your <b>spec</b>. Click it.
+        After that Jarvis <b>remembers</b> the spec you last played on each class and signs you up with it straight away;
+        its private reply has a <b>Wrong spec?</b> row of buttons to pick another.</li>
     <li>You're in, with your number in the sign-up order. Your spec decides your role: Protection Warrior → Tank, Holy Priest → Healer, Fury Warrior → Melee,
         Fire Mage → Ranged, and so on. The post updates straight away.</li>
   </ol>
-  <p>Changed your mind? Click a class again and pick a different spec. Death Knight only appears on Wrath raids.</p>
+  <p>Changed your mind? Click your class again to get the spec buttons, or another class to switch. Death Knight only appears on Wrath raids.</p>
 
   <h3>The other buttons</h3>
   <div class="table-wrap"><table>
@@ -305,8 +307,15 @@
 
 <section id="manage">
   <h2>Managing raids <span class="who">Officers</span></h2>
-  <p>Each raid has a number (its <b>event</b>), shown at the bottom of the post. In the commands below, the event box lists
-     upcoming raids so you can just pick one.</p>
+  <p><b>On the post:</b> the <b>⚙️ Officers</b> button (it stays after sign-ups close) opens a private panel:</p>
+  <ul>
+    <li><b>Edit details</b>: a form with the title, date and start time (server time), notes, and tank/healer limits
+        (like <code>3/6</code>, 0 = no limit), filled in with the current values. Change what you need and submit.</li>
+    <li><b>Remove sign-ups</b>: choose one or more people in the list (numbered as on the post), then <b>Remove chosen</b>.
+        Anyone auto-benched moves into the free spots.</li>
+  </ul>
+  <p>Only officers can use it. For everything else, use the commands. Each raid has a number (its <b>event</b>), shown at
+     the bottom of the post; the event box lists upcoming raids so you can just pick one.</p>
   <div class="table-wrap"><table>
     <tr><th>Command</th><th>What it does</th></tr>
     <tr><td><code>/raid edit</code></td><td>Change the title, date, time, notes, limits, deadline, reminder, picture or loot rules.
