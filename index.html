@@ -111,6 +111,7 @@
     <a href="#setup">Creating a raid (guided)</a>
     <a href="#create">Creating a raid (quick)</a>
     <a href="#manage">Managing raids</a>
+    <a href="#edit-signups">Editing sign-ups</a>
     <a href="#repeats">Repeating raids (series)</a>
     <a href="#loot">Loot rules</a>
     <a href="#rules">Roster rules</a>
@@ -316,12 +317,24 @@
   </ul>
   <p>Only officers can use it. For everything else, use the commands. Each raid has a number (its <b>event</b>), shown at
      the bottom of the post; the event box lists upcoming raids so you can just pick one.</p>
+
+  <h3 id="edit-signups">Editing someone's sign-up</h3>
+  <p>All of these work after sign-ups close, right up to the raid.</p>
+  <div class="table-wrap"><table>
+    <tr><th>To</th><th>Do this</th></tr>
+    <tr><td>Remove one or more people</td><td><b>⚙️ Officers</b> on the post → choose them in the list → <b>Remove chosen</b>. Or <code>/raid remove event:</code><i>raid</i> <code>member:</code><i>@name</i>.</td></tr>
+    <tr><td>Change someone's class or spec</td><td><code>/raid add event:</code><i>raid</i> <code>member:</code><i>@name</i> <code>class:</code><i>class</i> <code>spec:</code><i>spec</i>. It replaces their sign-up; they keep their number in the sign-up order.</td></tr>
+    <tr><td>Move someone to Bench, Tentative, Late or Absence (or back to Signed)</td><td>The same <code>/raid add</code> with <code>status:</code><i>Bench</i> (etc.), giving their current class and spec.</td></tr>
+    <tr><td>Sign up someone who isn't on the post</td><td><code>/raid add</code> as above; status defaults to Signed.</td></tr>
+  </table></div>
+  <div class="tip"><b>Officer changes skip the limits.</b>A status you set with <code>/raid add</code> is used as is, even past the tank,
+     healer or size limit. Removing someone does move auto-benched players up into the free spot (with a DM).</div>
   <div class="table-wrap"><table>
     <tr><th>Command</th><th>What it does</th></tr>
     <tr><td><code>/raid edit</code></td><td>Change the title, date, time, notes, limits, deadline, reminder, picture or loot rules.
         Add <code>also_repeats:True</code> to use the new settings (everything except date and time) for future repeats too.</td></tr>
-    <tr><td><code>/raid add</code></td><td>Sign someone up yourself, with class, spec and status. Works after sign-ups close.</td></tr>
-    <tr><td><code>/raid remove</code></td><td>Take someone off a raid.</td></tr>
+    <tr><td><code>/raid add</code></td><td>Sign someone up, or change their existing sign-up (class, spec, status). Works after sign-ups close.</td></tr>
+    <tr><td><code>/raid remove</code></td><td>Take someone off a raid (or use the Officers button for several at once).</td></tr>
     <tr><td><code>/raid cancel</code></td><td>Mark the raid cancelled (the post stays, greyed out) and DM everyone signed up.</td></tr>
     <tr><td><code>/raid delete</code></td><td>Delete the post and its sign-ups. No DMs are sent.</td></tr>
     <tr><td><code>/raid list</code></td><td>Upcoming raids and repeating raids (anyone can use this).</td></tr>
@@ -408,7 +421,7 @@
     <li><b>Signed</b> and <b>Late</b> count toward the roster and the role limits; Tentative, Bench and Absence don't.</li>
     <li>The raid size (10 or 25) is always the cap. Tank and healer limits are optional (0 = no limit).</li>
     <li>Over-limit sign-ups go to the bench as <i>(auto)</i> and move in by themselves, oldest first, with a DM.</li>
-    <li>At the deadline the sign-up buttons stop working. Officers can still use <code>/raid add</code> and <code>/raid remove</code>.</li>
+    <li>At the deadline the sign-up buttons stop working. Officers can still change sign-ups with the <b>⚙️ Officers</b> button, <code>/raid add</code> and <code>/raid remove</code> (see <a href="#edit-signups">Editing someone's sign-up</a>).</li>
     <li>3 hours after the start the raid is finished and its buttons are removed.</li>
   </ul>
 </section>
@@ -518,7 +531,7 @@
     <tr><td><code>/raid setup</code></td><td>Officers</td><td>Guided raid creation in a DM</td></tr>
     <tr><td><code>/raid create</code></td><td>Officers</td><td>Create a raid in one command</td></tr>
     <tr><td><code>/raid edit</code> <code>/raid cancel</code> <code>/raid delete</code></td><td>Officers</td><td>Change, cancel or delete a raid</td></tr>
-    <tr><td><code>/raid add</code> <code>/raid remove</code></td><td>Officers</td><td>Sign someone up or take them off</td></tr>
+    <tr><td><code>/raid add</code> <code>/raid remove</code></td><td>Officers</td><td>Sign someone up, change their sign-up, or take them off</td></tr>
     <tr><td><code>/raid stop-repeat</code></td><td>Officers</td><td>Stop a repeating raid</td></tr>
     <tr><td><code>/raid link</code> <code>/raid unlink</code></td><td>Officers</td><td>Link repeating raids into a loop, or undo it</td></tr>
     <tr><td><code>/whois</code> <code>/departures</code></td><td>Manage Server</td><td>Look up current and former members</td></tr>
