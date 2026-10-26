@@ -340,6 +340,17 @@
     <li>If Jarvis were offline past a raid's start, it skips that one rather than posting a raid that already happened.</li>
     <li>Each week is its own post with its own sign-ups.</li>
   </ul>
+  <h3>Linked raids (a loop)</h3>
+  <p>Two or more repeating raids can be linked so each one is posted <b>as the raid before it is ending</b>. For a Tuesday
+     and a Thursday raid that end at 10:30 PM server time:</p>
+  <div class="card"><code>/raid link series:2 3 ends:10:30pm</code></div>
+  <ul>
+    <li>Thursday's raid is posted at <b>10:25 PM on Tuesday</b>, and next Tuesday's at <b>10:25 PM on Thursday</b>, round and round.</li>
+    <li><code>series</code>: the series numbers from <code>/raid list</code>, in raid order; the last one links back to the first. Three or more work too.</li>
+    <li><code>ends</code>: when the raids end, in server time. One time for all, or one per series in the same order, e.g. <code>22:30, 23:00</code>.</li>
+    <li><code>before_end</code> (optional): how many minutes before the end to post. Default 5.</li>
+    <li><code>/raid list</code> shows when each linked raid will be posted next. <code>/raid unlink</code> with any series in the loop goes back to posting days ahead.</li>
+  </ul>
 </section>
 
 <section id="loot">
